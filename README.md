@@ -14,9 +14,11 @@ Cloud-based Sponsor Management System (Mini CRM) for a university club.
 ## Features (MVP)
 - Supabase Auth (email/password) with configurable allowlist (`ALLOWED_USER_EMAILS`).
 - Sponsor companies, contacts, tags, and status tracking.
+- Sponsor duzenleme ekrani (sirket + iletisim guncelleme/ekleme/silme).
 - Filtered sponsor list (tag, status, owner, search).
 - Sponsor detail timeline (inbound/outbound messages).
 - Gelen Kutusu sayfasi ile gelen mesajlari merkezi listeleme.
+- Gelen Kutusu kayitlarini uygulama icinde temizleme.
 - Bulk campaigns via SMTP (Nodemailer).
 - Reply tracking via IMAP sync every 5 minutes (`WAITING`/`SENT` threads).
 - Idempotent inbound sync using unique `gmail_message_id` (legacy column name).
@@ -46,6 +48,7 @@ src/
     (auth)/login
     (app)/dashboard
     (app)/sponsors
+    (app)/sponsors/[companyId]/edit
     (app)/campaigns/new
     (app)/inbox
     (app)/settings/integrations

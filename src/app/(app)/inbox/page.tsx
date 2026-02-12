@@ -1,7 +1,9 @@
 ﻿import Link from "next/link";
 
 import { StatusBadge } from "@/components/sponsors/StatusBadge";
+import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
+import { clearInboundInboxAction } from "@/features/gmail/actions";
 import { getInboundMessageFeed } from "@/features/gmail/queries";
 import { formatDate } from "@/lib/utils";
 
@@ -23,6 +25,8 @@ function summarizeBody(value: string): string {
 
 export default async function InboxPage({ searchParams }: InboxPageProps) {
   const query = (readParam(searchParams.q) ?? "").trim().toLowerCase();
+  const success = readParam(searchParams.success);
+  const error = readParam(searchParams.error);
   const inboundMessages = await getInboundMessageFeed(150);
 
   const rows = inboundMessages.filter((message) => {
@@ -52,6 +56,17 @@ export default async function InboxPage({ searchParams }: InboxPageProps) {
         </p>
       </div>
 
+      {error && (
+        <p className="rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+          {error}
+        </p>
+      )}
+      {success && (
+        <p className="rounded-xl border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-700">
+          {success}
+        </p>
+      )}
+
       <Card>
         <form className="grid gap-3 md:grid-cols-[1fr_auto]">
           <input
@@ -59,13 +74,16 @@ export default async function InboxPage({ searchParams }: InboxPageProps) {
             placeholder="Konu, kisi veya sirket ara..."
             defaultValue={readParam(searchParams.q) ?? ""}
           />
-          <button
-            type="submit"
-            className="inline-flex h-10 items-center justify-center rounded-lg bg-slate-900 px-4 text-sm font-semibold text-white transition hover:bg-slate-800"
-          >
-            Ara
-          </button>
+          <Button type="submit">Ara</Button>
         </form>
+        <div className="mt-3 flex flex-wrap items-center justify-between gap-3 border-t border-slate-200 pt-3">
+          <p className="text-sm text-slate-600">Toplam gelen mesaj: {inboundMessages.length}</p>
+          <form action={clearInboundInboxAction}>
+            <Button type="submit" variant="danger">
+              Gelen Kutusunu Temizle
+            </Button>
+          </form>
+        </div>
       </Card>
 
       <div className="space-y-3">

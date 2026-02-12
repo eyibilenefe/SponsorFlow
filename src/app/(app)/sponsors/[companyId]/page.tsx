@@ -1,4 +1,5 @@
-﻿import { notFound } from "next/navigation";
+﻿import Link from "next/link";
+import { notFound } from "next/navigation";
 
 import { StatusBadge } from "@/components/sponsors/StatusBadge";
 import { Button } from "@/components/ui/Button";
@@ -34,10 +35,15 @@ export default async function SponsorDetailPage({
 
   return (
     <div className="space-y-6">
-      <div>
-        <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">Sirket Detayi</p>
-        <h1 className="mt-1 text-3xl font-semibold text-slate-900">{detail.company.name}</h1>
-        <p className="text-sm text-slate-600">{detail.company.website ?? "Web sitesi yok"}</p>
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">Sirket Detayi</p>
+          <h1 className="mt-1 text-3xl font-semibold text-slate-900">{detail.company.name}</h1>
+          <p className="text-sm text-slate-600">{detail.company.website ?? "Web sitesi yok"}</p>
+        </div>
+        <Link href={`/sponsors/${detail.company.id}/edit`} className="text-sm font-medium">
+          Sirketi Duzenle
+        </Link>
       </div>
 
       {error && (

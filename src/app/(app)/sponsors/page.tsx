@@ -163,12 +163,13 @@ export default async function SponsorsPage({ searchParams }: SponsorsPageProps) 
                 <th className="px-4 py-3">Durum</th>
                 <th className="px-4 py-3">Son Hareket</th>
                 <th className="px-4 py-3">Hizli Guncelleme</th>
+                <th className="px-4 py-3">Detay</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-200 bg-white text-sm">
               {rows.length === 0 && (
                 <tr>
-                  <td className="px-4 py-6 text-slate-500" colSpan={7}>
+                  <td className="px-4 py-6 text-slate-500" colSpan={8}>
                     Filtrelere uyan sponsor kaydi bulunamadi.
                   </td>
                 </tr>
@@ -204,6 +205,14 @@ export default async function SponsorsPage({ searchParams }: SponsorsPageProps) 
                         </Button>
                       ))}
                     </form>
+                  </td>
+                  <td className="px-4 py-3">
+                    <Link
+                      href={`/sponsors/${row.companyId}`}
+                      className="inline-flex h-9 items-center justify-center rounded-lg bg-slate-900 px-3 text-xs font-semibold text-white transition hover:bg-slate-800"
+                    >
+                      Detay Ac
+                    </Link>
                   </td>
                 </tr>
               ))}
