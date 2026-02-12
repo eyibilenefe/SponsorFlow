@@ -1,0 +1,63 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+  --bg-top: #f5f9ff;
+  --bg-bottom: #f7f7fb;
+  --ink: #0f172a;
+  --ink-soft: #334155;
+  --line: #dbe3ef;
+}
+
+body {
+  font-family: var(--font-body), "Segoe UI", sans-serif;
+  color: var(--ink);
+  @apply relative min-h-screen bg-slate-50 antialiased;
+  background-image: linear-gradient(165deg, var(--bg-top) 0%, var(--bg-bottom) 55%, #ffffff 100%);
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 12% 18%, rgba(64, 120, 255, 0.16), transparent 38%),
+    radial-gradient(circle at 82% 5%, rgba(16, 185, 129, 0.12), transparent 30%),
+    radial-gradient(circle at 90% 88%, rgba(14, 165, 233, 0.1), transparent 34%);
+  z-index: -1;
+}
+
+a {
+  @apply text-primary-700 transition-colors hover:text-primary-800;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-display), "Segoe UI", sans-serif;
+  letter-spacing: -0.015em;
+}
+
+input:not([type="checkbox"]):not([type="radio"]),
+select,
+textarea {
+  @apply w-full rounded-xl border bg-white px-3 py-2.5 text-sm text-slate-900 shadow-sm transition-all focus:outline-none focus:ring-2;
+  border-color: var(--line);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+input:not([type="checkbox"]):not([type="radio"]):focus,
+select:focus,
+textarea:focus {
+  border-color: #5a85ff;
+  box-shadow: 0 0 0 3px rgba(90, 133, 255, 0.18);
+}
+
+label {
+  color: var(--ink-soft);
+  @apply text-sm font-semibold;
+}
