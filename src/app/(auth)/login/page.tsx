@@ -87,7 +87,8 @@ export default function LoginPage({ searchParams }: LoginPageProps) {
           <Card className="p-7">
             <h2 className="text-xl font-semibold text-slate-900">Yeni Hesap Olustur</h2>
             <p className="mt-2 text-sm text-slate-600">
-              Erisim politikasi <code>ALLOWED_USER_EMAILS</code> degiskeni ile yonetilir.
+              Kayit sonrasi hesaplar admin onayi ile aktif edilir. Erisim politikasi{" "}
+              <code>ALLOWED_USER_EMAILS</code> degiskeni ile yonetilir.
             </p>
             <form action={signUpAction} className="mt-6 space-y-3">
               <div>

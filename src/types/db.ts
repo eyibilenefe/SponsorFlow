@@ -8,18 +8,30 @@ export type Database = {
           id: string;
           name: string;
           email: string;
+          is_admin: boolean;
+          is_approved: boolean;
+          approved_at: string | null;
+          approved_by: string | null;
           created_at: string;
         };
         Insert: {
           id?: string;
           name: string;
           email: string;
+          is_admin?: boolean;
+          is_approved?: boolean;
+          approved_at?: string | null;
+          approved_by?: string | null;
           created_at?: string;
         };
         Update: {
           id?: string;
           name?: string;
           email?: string;
+          is_admin?: boolean;
+          is_approved?: boolean;
+          approved_at?: string | null;
+          approved_by?: string | null;
           created_at?: string;
         };
         Relationships: [];

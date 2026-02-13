@@ -41,6 +41,13 @@ function optionalBoolean(name: string, fallback: boolean): boolean {
   return fallback;
 }
 
+function optionalString(name: string): string | undefined {
+  const raw = process.env[name];
+  if (!raw) return undefined;
+  const value = raw.trim();
+  return value.length > 0 ? value : undefined;
+}
+
 export const env = {
   get NEXT_PUBLIC_SUPABASE_URL() {
     return required("NEXT_PUBLIC_SUPABASE_URL");
@@ -68,6 +75,27 @@ export const env = {
   },
   get SMTP_FROM_EMAIL() {
     return required("SMTP_FROM_EMAIL");
+  },
+  get SMTP_FROM_NAME() {
+    return optionalString("SMTP_FROM_NAME");
+  },
+  get SMTP_REPLY_TO() {
+    return optionalString("SMTP_REPLY_TO");
+  },
+  get SMTP_LIST_UNSUBSCRIBE_EMAIL() {
+    return optionalString("SMTP_LIST_UNSUBSCRIBE_EMAIL");
+  },
+  get SMTP_LIST_UNSUBSCRIBE_URL() {
+    return optionalString("SMTP_LIST_UNSUBSCRIBE_URL");
+  },
+  get SMTP_DKIM_DOMAIN_NAME() {
+    return optionalString("SMTP_DKIM_DOMAIN_NAME");
+  },
+  get SMTP_DKIM_KEY_SELECTOR() {
+    return optionalString("SMTP_DKIM_KEY_SELECTOR");
+  },
+  get SMTP_DKIM_PRIVATE_KEY() {
+    return optionalString("SMTP_DKIM_PRIVATE_KEY");
   },
   get IMAP_HOST() {
     return required("IMAP_HOST");

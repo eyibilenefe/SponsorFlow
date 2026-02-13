@@ -1,7 +1,7 @@
 import { createServerClient, type CookieOptions } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
-import { isEmailAllowed } from "@/features/auth/allowlist";
+import { AUTH_ERROR_MESSAGES, getUserAccessState } from "@/features/auth/access";
 import { getSupabasePublicConfig } from "@/lib/supabase/config";
 import type { Database } from "@/types/db";
 
@@ -17,9 +17,20 @@ function isPublicPath(pathname: string) {
   );
 }
 
-function redirectToLogin(request: NextRequest) {
+function redirectWithCookies(url: URL, baseResponse: NextResponse) {
+  const redirectResponse = NextResponse.redirect(url);
+  for (const cookie of baseResponse.cookies.getAll()) {
+    redirectResponse.cookies.set(cookie);
+  }
+  return redirectResponse;
+}
+
+function redirectToLogin(request: NextRequest, baseResponse: NextResponse, error?: string) {
   const loginUrl = new URL("/login", request.url);
-  return NextResponse.redirect(loginUrl);
+  if (error) {
+    loginUrl.searchParams.set("error", error);
+  }
+  return redirectWithCookies(loginUrl, baseResponse);
 }
 
 export async function updateSession(request: NextRequest) {
@@ -68,17 +79,17 @@ export async function updateSession(request: NextRequest) {
     if (isPublic) {
       return response;
     }
-    return redirectToLogin(request);
+    return redirectToLogin(request, response);
   }
 
-  const allowed = isEmailAllowed(user.email);
-  if (!allowed) {
+  const access = await getUserAccessState(supabase, user);
+  if (!access.allowed) {
     await supabase.auth.signOut();
-    return redirectToLogin(request);
+    return redirectToLogin(request, response, access.reason ?? AUTH_ERROR_MESSAGES.approvalPending);
   }
 
   if (pathname === "/login") {
-    return NextResponse.redirect(new URL("/dashboard", request.url));
+    return redirectWithCookies(new URL("/dashboard", request.url), response);
   }
 
   return response;

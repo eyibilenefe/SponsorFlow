@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
+import { AUTH_ERROR_MESSAGES, getUserAccessState } from "@/features/auth/access";
 import { isEmailAllowed, normalizeEmail } from "@/features/auth/allowlist";
 import { signInSchema, signUpSchema } from "@/features/auth/validators";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
@@ -22,14 +23,28 @@ export async function signInAction(formData: FormData) {
   }
 
   if (!isEmailAllowed(parsed.data.email)) {
-    redirect(toLoginError("Bu hesap SponsorFlow erisim listesinde degil."));
+    redirect(toLoginError(AUTH_ERROR_MESSAGES.allowlist));
   }
 
-  const supabase = createSupabaseServerClient();
+  const supabase = createSupabaseServerClient({ allowCookieMutations: true });
   const { error } = await supabase.auth.signInWithPassword(parsed.data);
 
   if (error) {
     redirect(toLoginError(error.message));
+  }
+
+  const {
+    data: { user }
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    redirect(toLoginError("Giris sonrasi kullanici dogrulanamadi."));
+  }
+
+  const access = await getUserAccessState(supabase, user);
+  if (!access.allowed) {
+    await supabase.auth.signOut();
+    redirect(toLoginError(access.reason ?? AUTH_ERROR_MESSAGES.approvalPending));
   }
 
   revalidatePath("/", "layout");
@@ -51,7 +66,7 @@ export async function signUpAction(formData: FormData) {
     redirect(toLoginError("Bu e-posta allowlist politikasina takildi."));
   }
 
-  const supabase = createSupabaseServerClient();
+  const supabase = createSupabaseServerClient({ allowCookieMutations: true });
   const { error } = await supabase.auth.signUp({
     email: parsed.data.email,
     password: parsed.data.password,
@@ -66,11 +81,13 @@ export async function signUpAction(formData: FormData) {
     redirect(toLoginError(error.message));
   }
 
-  redirect("/login?success=Hesap%20olusturuldu.%20Simdi%20giris%20yapabilirsiniz.");
+  redirect(
+    "/login?success=Kayit%20alindi.%20Hesabiniz%20admin%20onayindan%20sonra%20aktif%20olacak."
+  );
 }
 
 export async function signOutAction() {
-  const supabase = createSupabaseServerClient();
+  const supabase = createSupabaseServerClient({ allowCookieMutations: true });
   await supabase.auth.signOut();
   revalidatePath("/", "layout");
   redirect("/login");
